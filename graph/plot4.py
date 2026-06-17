@@ -11,7 +11,7 @@ cur = con.cursor()
 plt.style.use('tableau-colorblind10')
 fig = plt.figure()
 ax = fig.add_subplot(111)
-nbday=50
+nbday=150
 
 res = cur.execute(f"""
     with 
@@ -22,8 +22,8 @@ res = cur.execute(f"""
         percentile_cont(0.5) WITHIN GROUP ( order by score) as med,
         percentile_cont(0.66)  WITHIN GROUP ( order by score) as up_tier,
         sum(score)/count(*) as average,
-        count(*) from posts, date
-    where maybe_spam is false and is_spam is not true and
+        count(*) from posts as p, date
+    where maybe_spam is false and is_spam is not true and 'publie' = ANY(p.annotation) and
     created_at BETWEEN  date.d::timestamp - interval '1d' and date.d
     group by date.d order by date.d asc;
 
@@ -35,8 +35,8 @@ time = data["timestamp"]
 #delta = (-data["timestamp"].shift(1)+data["timestamp"])
 #ax.plot(time, data["tier"], label="33%ile")
 #ax.plot(time, data["up_tier"], label="66%ile")
-ax.plot(time, data["median"], label="median")
-ax.plot(time, data["average"], label="average")
+ax.plot(time, data["median"], label="médiane")
+ax.plot(time, data["average"], label="moyenne")
 #ax.plot(time, data["count"], label="count")
 #ax.xaxis.set_major_formatter(mdates.DateFormatter('%a'))
 fig.autofmt_xdate()

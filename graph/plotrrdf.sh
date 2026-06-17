@@ -4,7 +4,7 @@ SINCE=${1:-1d}
 perl -ane "/(\d+),(\d+),[^,]+,(\d+),(\d+),(\d+),(\d+)/ and \$1 > $(rrdinfo activitef.rrd | perl -ane '/last_update = (\d+)/ and print $1' || echo 0 ) and print \"rrdtool update activitef.rrd \$1:\$2:\$3:\$4:\$5:\$6\n\"" ~/trollometre.csv | bash  && \
 rrdtool graph -w 700 -h 400  activite.png \
     -t "activité bluesky francophone en évènements posts par seconde" \
-    --start now-$SINCE --end now -l 0 -u 1.2 -r   \
+    --start now-$SINCE --end now -l 0  -r   \
     COMMENT:"          " COMMENT:" current " COMMENT:"average " COMMENT:"maximum " COMMENT:"minimum\l" \
     DEF:spamsa=activitef.rrd:spam:AVERAGE CDEF:spam=spamsa,300,/ \
     AREA:spam#00FF00:"spams/s ":STACK \

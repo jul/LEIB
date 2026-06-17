@@ -10,7 +10,7 @@ plt.style.use('tableau-colorblind10')
 fig = plt.figure()
 ax = fig.add_subplot(111)
 
-nb_day = 40
+nb_day = 100
 con = sq.connect(dbname="trollo", user="jul")
 cur = con.cursor()
 res = cur.execute(f"""
@@ -22,8 +22,8 @@ res = cur.execute(f"""
         percentile_cont(0.5) WITHIN GROUP ( order by score) as med,
         percentile_cont(0.66)  WITHIN GROUP ( order by score) as up_tier,
         sum(score)/count(*) as average,
-        count(*) from posts, date
-    where maybe_spam is false and is_spam is not true and
+        count(*) from posts as p, date
+    where maybe_spam is false and is_spam is not true and 'publie' = ANY(p.annotation) and
     created_at BETWEEN  date.d::timestamp - interval '24h' and date.d
     group by date.d order by date.d asc;
 
@@ -54,5 +54,5 @@ plt.axhline( 115, color= "green")
 #ax.xaxis.set_major_formatter(mdates.DateFormatter('%a'))
 fig.autofmt_xdate()
 ax.legend(loc='upper left')
-plt.title("Score du trollomètre en fonction du temps")
+plt.title("Score du _haut du ciel bleu_ en fonction du temps")
 plt.show()
